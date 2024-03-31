@@ -1,7 +1,7 @@
-﻿using static Weather_Monitoring_And_Reporting_Service.Weather;
-using Weather_Monitoring_And_Reporting_Service.WeatherBot;
+﻿using Weather_Monitoring_And_Reporting_Service.WeatherBot;
 using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
+using Weather_Monitoring_And_Reporting_Service.Strategies;
 
 namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 

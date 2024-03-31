@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Publisher;
+using Weather_Monitoring_And_Reporting_Service.Strategies;
 using static Weather_Monitoring_And_Reporting_Service.Weather;
 
 namespace Weather_Monitoring_And_Reporting_Service;
