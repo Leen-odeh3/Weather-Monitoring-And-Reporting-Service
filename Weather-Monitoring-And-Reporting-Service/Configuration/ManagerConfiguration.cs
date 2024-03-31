@@ -8,7 +8,7 @@ public class ManagerConfiguration
     public static BotConfiguration? LoadConfig(string filePath, JsonSerializerOptions options)
     {
         string fileContent = File.ReadAllText(filePath);
-        BotConfiguration? configuration = JsonSerializer.Deserialize<BotConfiguration>(fileContent, options);
-        return configuration;
+        BotConfiguration? config = JsonSerializer.Deserialize<BotConfiguration>(fileContent, options);
+        return config;
     }
 }
