@@ -1,31 +1,19 @@
 ﻿
-using Weather_Monitoring_And_Reporting_Service.Publisher;
-using Weather_Monitoring_And_Reporting_Service.Subscriber;
+using System.Xml.Serialization;
 
 namespace Weather_Monitoring_And_Reporting_Service;
 
-internal class Weather : IWeatherPublisher
+public class Weather 
 {
-    public int Humidity { get; init; }
-    public int Temperature { get; init; }
-
-    private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
-
-    public void Notify()
+    [XmlRoot("Weather")]
+    public class WeatherData
     {
-        foreach (var subscriber in _subscribers)
-        {
-            subscriber.ProcessWeatherUpdate(this);
-        }
-    }
+        [XmlElement("Location")]
+        public string Location { get; init; }
 
-    public void Attach(IWeatherSubscriber observer)
-    {
-        _subscribers.Add(observer);
-    }
-
-    public void Detach(IWeatherSubscriber observer)
-    {
-        _subscribers.Remove(observer);
+        [XmlElement("Humidity")]
+        public double Humidity { get; init; }
+        [XmlElement("Temperature")]
+        public double Temperature { get; init; }
     }
 }
