@@ -8,31 +8,31 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 public class WeatherPublisher : IWeatherPublisher
 {
 
-    private Weather _weatherData;
-    public Weather WeatherData
+    private Weather _weather;
+    public Weather Weather
     {
         set
         {
-            _weatherData = value;
+            _weather = value;
             Notify();
         }
     }
 
-    private List<IWeatherBotSubscriber> _subscribers = new List<IWeatherBotSubscriber>();
+    private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
     public WeatherPublisher(string text, ITextFormatStrategy textFormat, BotConfiguration botConfig)
     {
         InitializeSubscribers(botConfig);
 
-        _weatherData = textFormat.GetWeatherData(text);
+        _weather = textFormat.GetWeatherData(text);
 
         Notify();
     }
 
     private void InitializeSubscribers(BotConfiguration botConfig)
     {
-        Attach(botConfig.RainBot);
-        Attach(botConfig.SnowBot);
-        Attach(botConfig.SunBot);
+        Attach((IWeatherSubscriber)botConfig.RainBot);
+        Attach((IWeatherSubscriber)botConfig.SnowBot);
+        Attach((IWeatherSubscriber)botConfig.SunBot);
     }
 
     public void Notify()
@@ -41,7 +41,7 @@ public class WeatherPublisher : IWeatherPublisher
         Thread.Sleep(500);
         foreach (var subscriber in _subscribers)
         {
-            subscriber.ProcessWeatherUpdate(_weatherData);
+            subscriber.ProcessWeatherUpdate(_weather);
             Thread.Sleep(500);
         }
     }
