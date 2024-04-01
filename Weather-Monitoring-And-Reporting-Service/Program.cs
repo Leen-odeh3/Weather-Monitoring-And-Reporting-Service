@@ -48,7 +48,7 @@ internal class Program
             Temperature = 20000
         };
 
-        weatherDataPublisher.Weather = newData;
+        weatherDataPublisher.WeatherData = newData;
 
     }
 
