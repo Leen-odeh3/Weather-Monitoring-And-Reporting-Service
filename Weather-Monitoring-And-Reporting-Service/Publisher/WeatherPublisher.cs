@@ -2,18 +2,19 @@
 using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
+using static Weather_Monitoring_And_Reporting_Service.Weather;
 
 namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 
 public class WeatherPublisher : IWeatherPublisher
 {
 
-    private Weather _weather;
-    public Weather Weather
+    private WeatherData _weatherData;
+    public WeatherData WeatherData
     {
         set
         {
-            _weather = value;
+            _weatherData = value;
             Notify();
         }
     }
@@ -23,27 +24,16 @@ public class WeatherPublisher : IWeatherPublisher
     {
         InitializeSubscribers(botConfig);
 
-        _weather = textFormat.GetWeatherData(text);
+        _weatherData = textFormat.GetWeatherData(text);
 
         Notify();
     }
 
     private void InitializeSubscribers(BotConfiguration botConfig)
     {
-        Attach((IWeatherSubscriber)botConfig.RainBot);
-        Attach((IWeatherSubscriber)botConfig.SnowBot);
-        Attach((IWeatherSubscriber)botConfig.SunBot);
-    }
-
-    public void Notify()
-    {
-        Console.WriteLine("Notifying observers .... ");
-        Thread.Sleep(500);
-        foreach (var subscriber in _subscribers)
-        {
-            subscriber.ProcessWeatherUpdate(_weather);
-            Thread.Sleep(500);
-        }
+        Attach(botConfig.RainBot);
+        Attach(botConfig.SnowBot);
+        Attach(botConfig.SunBot);
     }
 
     public void Attach(IWeatherSubscriber observer)
@@ -54,6 +44,17 @@ public class WeatherPublisher : IWeatherPublisher
     public void Detach(IWeatherSubscriber observer)
     {
         _subscribers.Remove(observer);
+    }
 
+    public void Notify()
+    {
+        Console.WriteLine("Notifying observers .... ");
+        Thread.Sleep(500);
+        foreach (var subscriber in _subscribers)
+        {
+            subscriber.ProcessWeatherUpdate(_weatherData);
+            Thread.Sleep(500);
+        }
     }
 }
+
