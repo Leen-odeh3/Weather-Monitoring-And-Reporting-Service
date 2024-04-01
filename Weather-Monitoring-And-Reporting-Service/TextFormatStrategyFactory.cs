@@ -1,5 +1,7 @@
 ﻿
 
+using Weather_Monitoring_And_Reporting_Service.Strategies;
+
 namespace Weather_Monitoring_And_Reporting_Service;
 
 public static class TextFormatStrategyFactory
