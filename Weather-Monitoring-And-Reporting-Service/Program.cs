@@ -1,68 +1,59 @@
 ﻿using System.Text.Json;
-using System.Xml.Serialization;
-using Weather_Monitoring_And_Reporting_Service.Configuration;
-using Weather_Monitoring_And_Reporting_Service.Publisher;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
+using Weather_Monitoring_And_Reporting_Service;
+using Weather_Monitoring_And_Reporting_Service.Publisher;
+using Weather_Monitoring_And_Reporting_Service.Configuration;
 
-namespace Weather_Monitoring_And_Reporting_Service
+namespace WeatherService
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            try
+            #region Load Bot Configurations
+            BotConfiguration? botConfig = LoadConfig();
+
+            if (botConfig is null)
             {
-                BotConfiguration? botConfig = LoadConfig();
-
-                if (botConfig is null)
-                {
-                    Console.WriteLine("An error occurred while loading configurations.");
-                    Console.WriteLine("Exiting...");
-                    await Task.Delay(2000);
-                    return;
-                }
-
-                
-                Console.WriteLine("Enter weather data in JSON or XML format:");
-                string weatherDataInput = Console.ReadLine();
-
-                Weather weatherData;
-                if (weatherDataInput.StartsWith("{"))
-                {
-                    weatherData = JsonSerializer.Deserialize<Weather>(weatherDataInput);
-                }
-                else if (weatherDataInput.StartsWith("<"))
-                {
-                    var serializer = new XmlSerializer(typeof(Weather));
-                    using (var reader = new StringReader(weatherDataInput))
-                    {
-                        weatherData = (Weather)serializer.Deserialize(reader);
-                    }
-                }
-                else
-                {
-                    throw new FormatException("Invalid input format.");
-                }
-
-                ITextFormatStrategy? textFormatStrategy = GetTextFormatStrategy(weatherDataInput);
-                WeatherPublisher weatherDataPublisher = new WeatherPublisher(weatherData, textFormatStrategy, botConfig);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine("An error occurred");
                 Console.WriteLine("Exiting...");
+                Thread.Sleep(2000);
+                return;
             }
+            #endregion
+
+            #region Get Format Strategy
+            Console.Write("Enter the path to the weather data file: ");
+            string? weatherDataFilePath = Console.ReadLine();
+
+            ITextFormatStrategy? textFormatStrategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
+
+            if (textFormatStrategy == null)
+            {
+                Console.WriteLine("Cannot Handle that File");
+                Console.WriteLine("Exiting...");
+                Thread.Sleep(2000);
+                return;
+            }
+            #endregion
+
+            string weatherDataText = File.ReadAllText(weatherDataFilePath);
+            WeatherPublisher weatherDataPublisher = new WeatherPublisher(weatherDataText, textFormatStrategy, botConfig);
+
+            Weather newData = new Weather
+            {
+                Humidity = 10000,
+                Location = "New Jersy",
+                Temperature = 20000
+            };
+
+            weatherDataPublisher.WeatherData = newData;
+
         }
 
         private static BotConfiguration? LoadConfig()
         {
             string filePath = "config.json";
-
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException("Configuration file not found.");
-            }
-
             JsonSerializerOptions options = new JsonSerializerOptions
             {
                 WriteIndented = true,
@@ -71,22 +62,6 @@ namespace Weather_Monitoring_And_Reporting_Service
 
             BotConfiguration? botConfig = ManagerConfiguration.LoadConfig(filePath, options);
             return botConfig;
-        }
-
-        private static ITextFormatStrategy? GetTextFormatStrategy(string input)
-        {
-            if (input.StartsWith("{"))
-            {
-                return new JsonFormatStrategy();
-            }
-            else if (input.StartsWith("<"))
-            {
-                return new XmlFormatStrategy();
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 }
