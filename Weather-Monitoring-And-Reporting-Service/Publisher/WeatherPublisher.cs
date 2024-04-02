@@ -8,6 +8,8 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 
 public class WeatherPublisher : IWeatherPublisher
 {
+    private bool _isNotified = false;
+
 
     private Weather _weatherData;
     public Weather WeatherData
@@ -59,12 +61,16 @@ public class WeatherPublisher : IWeatherPublisher
 
     public void Notify()
     {
-        Console.WriteLine("Notifying observers .... ");
-        Thread.Sleep(500);
-        foreach (var subscriber in _subscribers)
+        if (!_isNotified)
         {
-            subscriber.ProcessWeatherUpdate(_weatherData);
+            Console.WriteLine("Notifying observers .... ");
             Thread.Sleep(500);
+            foreach (var subscriber in _subscribers)
+            {
+                subscriber.ProcessWeatherUpdate(_weatherData);
+                Thread.Sleep(500);
+            }
+            _isNotified = true;
         }
     }
 }
