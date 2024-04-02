@@ -28,7 +28,8 @@ namespace WeatherService
 
             ITextFormatStrategy? textFormatStrategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
 
-            if (textFormatStrategy == null)
+           if (textFormatStrategy == null)
+
             {
                 Console.WriteLine("Cannot Handle that File");
                 Console.WriteLine("Exiting...");
@@ -42,9 +43,9 @@ namespace WeatherService
 
             Weather newData = new Weather
             {
-                Humidity = 10000,
-                Location = "New Jersy",
-                Temperature = 20000
+                Humidity = 85.0,
+                Location = "Alex",
+                Temperature = 23.0
             };
 
             weatherDataPublisher.WeatherData = newData;
