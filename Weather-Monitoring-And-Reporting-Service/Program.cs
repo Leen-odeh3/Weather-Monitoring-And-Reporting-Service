@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Text.Json;
-using System.Threading;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Publisher;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
@@ -28,35 +26,26 @@ namespace Weather_Monitoring_And_Reporting_Service
                 #endregion
 
                 #region Get Format Strategy
-                Console.Write("Enter the path to the weather data file: ");
-                string? weatherDataFilePath = Console.ReadLine();
-
-                ITextFormatStrategy? textFormatStrategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
-
-                if (textFormatStrategy is null)
-                {
-                    Console.WriteLine("Cannot handle that file.");
-                    Console.WriteLine("Exiting...");
-                    return;
-                }
-                #endregion
-
-                string weatherDataText = File.ReadAllText(weatherDataFilePath);
-                WeatherPublisher weatherDataPublisher = new WeatherPublisher(weatherDataText, textFormatStrategy, botConfig);
+                Console.WriteLine("Enter the weather data in the following format:");
+                Console.WriteLine("Location: ");
+                string location = Console.ReadLine();
+                Console.WriteLine("Temperature: ");
+                double temperature = Convert.ToDouble(Console.ReadLine());
+                Console.WriteLine("Humidity: ");
+                double humidity = Convert.ToDouble(Console.ReadLine());
 
                 WeatherData newData = new WeatherData
                 {
-                    Humidity = 10000,
-                    Location = "New Jersey",
-                    Temperature = 20000
+                    Location = location,
+                    Temperature = temperature,
+                    Humidity = humidity
                 };
 
-                weatherDataPublisher.WeatherData = newData;
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("Configuration file not found.");
-                Console.WriteLine("Exiting...");
+                ITextFormatStrategy? textFormatStrategy = new JsonFormatStrategy(); 
+
+                #endregion
+
+                WeatherPublisher weatherDataPublisher = new WeatherPublisher(newData, textFormatStrategy, botConfig);
             }
             catch (Exception ex)
             {
@@ -67,7 +56,8 @@ namespace Weather_Monitoring_And_Reporting_Service
 
         private static BotConfiguration? LoadConfig()
         {
-            string filePath = "config.json";
+            string filePath = "C:\\Users\\hp\\Desktop\\C#\\Weather-Monitoring-And-Reporting-Service\\config.json";
+
 
             if (!File.Exists(filePath))
             {

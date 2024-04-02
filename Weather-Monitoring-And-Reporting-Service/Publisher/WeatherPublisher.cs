@@ -20,6 +20,10 @@ public class WeatherPublisher : IWeatherPublisher
     }
 
     private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
+    private WeatherData newData;
+    private ITextFormatStrategy textFormatStrategy;
+    private BotConfiguration botConfig;
+
     public WeatherPublisher(string text, ITextFormatStrategy textFormat, BotConfiguration botConfig)
     {
         InitializeSubscribers(botConfig);
@@ -27,6 +31,13 @@ public class WeatherPublisher : IWeatherPublisher
         _weatherData = textFormat.GetWeatherData(text);
 
         Notify();
+    }
+
+    public WeatherPublisher(WeatherData newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
+    {
+        this.newData = newData;
+        this.textFormatStrategy = textFormatStrategy;
+        this.botConfig = botConfig;
     }
 
     private void InitializeSubscribers(BotConfiguration botConfig)
