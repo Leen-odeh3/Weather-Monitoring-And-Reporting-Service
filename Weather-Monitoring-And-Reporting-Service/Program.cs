@@ -1,60 +1,51 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
+using System.Xml.Serialization;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Publisher;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
-using static Weather_Monitoring_And_Reporting_Service.Weather;
 
 namespace Weather_Monitoring_And_Reporting_Service
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             try
             {
-                #region Load Bot Configurations
                 BotConfiguration? botConfig = LoadConfig();
 
                 if (botConfig is null)
                 {
                     Console.WriteLine("An error occurred while loading configurations.");
                     Console.WriteLine("Exiting...");
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                     return;
                 }
-                #endregion
-
-                #region Get Format Strategy
-                Console.WriteLine("Enter the weather data in the following format:");
-                Console.Write("Location: ");
-                string location = Console.ReadLine();
-                Console.Write("Temperature: ");
-                double temperature = Convert.ToDouble(Console.ReadLine());
-                Console.Write("Humidity: ");
-                double humidity = Convert.ToDouble(Console.ReadLine());
-
-                Console.WriteLine("Weather data entered successfully!");
 
                 
-                Thread.Sleep(2000);
+                Console.WriteLine("Enter weather data in JSON or XML format:");
+                string weatherDataInput = Console.ReadLine();
 
-                Environment.Exit(0);
-
-
-                Weather newData = new Weather
+                Weather weatherData;
+                if (weatherDataInput.StartsWith("{"))
                 {
-                    Location = location,
-                    Temperature = temperature,
-                    Humidity = humidity
-                };
+                    weatherData = JsonSerializer.Deserialize<Weather>(weatherDataInput);
+                }
+                else if (weatherDataInput.StartsWith("<"))
+                {
+                    var serializer = new XmlSerializer(typeof(Weather));
+                    using (var reader = new StringReader(weatherDataInput))
+                    {
+                        weatherData = (Weather)serializer.Deserialize(reader);
+                    }
+                }
+                else
+                {
+                    throw new FormatException("Invalid input format.");
+                }
 
-
-                ITextFormatStrategy? textFormatStrategy = new JsonFormatStrategy(); 
-
-                #endregion
-
-                WeatherPublisher weatherDataPublisher = new WeatherPublisher(newData, textFormatStrategy, botConfig);
+                ITextFormatStrategy? textFormatStrategy = GetTextFormatStrategy(weatherDataInput);
+                WeatherPublisher weatherDataPublisher = new WeatherPublisher(weatherData, textFormatStrategy, botConfig);
             }
             catch (Exception ex)
             {
@@ -65,8 +56,7 @@ namespace Weather_Monitoring_And_Reporting_Service
 
         private static BotConfiguration? LoadConfig()
         {
-            string filePath = "C:\\Users\\hp\\Desktop\\C#\\Weather-Monitoring-And-Reporting-Service\\config.json";
-
+            string filePath = "config.json";
 
             if (!File.Exists(filePath))
             {
@@ -81,6 +71,22 @@ namespace Weather_Monitoring_And_Reporting_Service
 
             BotConfiguration? botConfig = ManagerConfiguration.LoadConfig(filePath, options);
             return botConfig;
+        }
+
+        private static ITextFormatStrategy? GetTextFormatStrategy(string input)
+        {
+            if (input.StartsWith("{"))
+            {
+                return new JsonFormatStrategy();
+            }
+            else if (input.StartsWith("<"))
+            {
+                return new XmlFormatStrategy();
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
