@@ -11,7 +11,7 @@ public class SunBot : IWeatherSubscriber
     public int TemperatureThreshold { get; init; }
     public string Message { get; init; }
 
-    public void ProcessWeatherUpdate(WeatherData weatherData)
+    public void ProcessWeatherUpdate(Weather weatherData)
     {
         if (!Enabled) return;
         if (weatherData.Temperature > TemperatureThreshold)

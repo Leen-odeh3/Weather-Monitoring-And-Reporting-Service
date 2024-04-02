@@ -6,9 +6,9 @@ namespace Weather_Monitoring_And_Reporting_Service.Strategies;
 
 public class JsonFormatStrategy : ITextFormatStrategy
 {
-    public WeatherData GetWeatherData(string text)
+    public Weather GetWeatherData(string text)
     {
-        WeatherData weatherData = JsonSerializer.Deserialize<WeatherData>(text);
+        Weather weatherData = JsonSerializer.Deserialize<Weather>(text);
         return weatherData;
     }
 }

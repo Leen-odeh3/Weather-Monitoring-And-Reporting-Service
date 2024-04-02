@@ -27,19 +27,28 @@ namespace Weather_Monitoring_And_Reporting_Service
 
                 #region Get Format Strategy
                 Console.WriteLine("Enter the weather data in the following format:");
-                Console.WriteLine("Location: ");
+                Console.Write("Location: ");
                 string location = Console.ReadLine();
-                Console.WriteLine("Temperature: ");
+                Console.Write("Temperature: ");
                 double temperature = Convert.ToDouble(Console.ReadLine());
-                Console.WriteLine("Humidity: ");
+                Console.Write("Humidity: ");
                 double humidity = Convert.ToDouble(Console.ReadLine());
 
-                WeatherData newData = new WeatherData
+                Console.WriteLine("Weather data entered successfully!");
+
+                
+                Thread.Sleep(2000);
+
+                Environment.Exit(0);
+
+
+                Weather newData = new Weather
                 {
                     Location = location,
                     Temperature = temperature,
                     Humidity = humidity
                 };
+
 
                 ITextFormatStrategy? textFormatStrategy = new JsonFormatStrategy(); 
 

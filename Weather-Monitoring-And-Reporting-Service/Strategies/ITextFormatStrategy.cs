@@ -5,5 +5,5 @@ namespace Weather_Monitoring_And_Reporting_Service.Strategies;
 
 public interface ITextFormatStrategy
 {
-    public WeatherData GetWeatherData(string text);
+    public Weather GetWeatherData(string text);
 }

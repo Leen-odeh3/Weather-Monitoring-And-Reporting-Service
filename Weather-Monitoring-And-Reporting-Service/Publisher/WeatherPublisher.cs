@@ -9,8 +9,8 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 public class WeatherPublisher : IWeatherPublisher
 {
 
-    private WeatherData _weatherData;
-    public WeatherData WeatherData
+    private Weather _weatherData;
+    public Weather WeatherData
     {
         set
         {
@@ -20,7 +20,7 @@ public class WeatherPublisher : IWeatherPublisher
     }
 
     private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
-    private WeatherData newData;
+    private Weather newData;
     private ITextFormatStrategy textFormatStrategy;
     private BotConfiguration botConfig;
 
@@ -33,7 +33,7 @@ public class WeatherPublisher : IWeatherPublisher
         Notify();
     }
 
-    public WeatherPublisher(WeatherData newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
+    public WeatherPublisher(Weather newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
     {
         this.newData = newData;
         this.textFormatStrategy = textFormatStrategy;

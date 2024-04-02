@@ -6,14 +6,14 @@ namespace Weather_Monitoring_And_Reporting_Service.Strategies;
 
 public class XmlFormatStrategy : ITextFormatStrategy
 {
-    public WeatherData GetWeatherData(string text)
+    public Weather GetWeatherData(string text)
     {
 
-        XmlSerializer serializer = new XmlSerializer(typeof(WeatherData));
+        XmlSerializer serializer = new XmlSerializer(typeof(Weather));
 
         using (TextReader reader = new StringReader(text))
         {
-            return (WeatherData)serializer.Deserialize(reader);
+            return (Weather)serializer.Deserialize(reader);
         }
 
     }

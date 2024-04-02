@@ -10,7 +10,7 @@ namespace Weather_Monitoring_And_Reporting_Service.WeatherBot;
         public int HumidityThreshold { get; init; }
         public string Message { get; init; }
 
-        public void ProcessWeatherUpdate(WeatherData weatherData)
+        public void ProcessWeatherUpdate(Weather weatherData)
         {
             if (!Enabled) return;
             if (weatherData.Humidity > HumidityThreshold)
