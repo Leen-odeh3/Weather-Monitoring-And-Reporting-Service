@@ -29,7 +29,6 @@ if (textFormatStrategy == null)
 {
     Console.WriteLine("Cannot Handle that File");
     Console.WriteLine("Exiting...");
-    Thread.Sleep(2000);
     return;
 }
 
