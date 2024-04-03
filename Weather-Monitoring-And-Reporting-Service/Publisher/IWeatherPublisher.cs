@@ -6,9 +6,7 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 
 public interface IWeatherPublisher
 {
-    public void Attach(IWeatherSubscriber observer);
-
-    public void Detach(IWeatherSubscriber observer);
-
-    public void Notify();
+    void Attach(IWeatherSubscriber observer);
+    void Detach(IWeatherSubscriber observer);
+    Task NotifyAsync();
 }

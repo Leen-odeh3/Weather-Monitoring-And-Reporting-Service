@@ -1,33 +1,40 @@
-﻿
+﻿using Weather_Monitoring_And_Reporting_Service.Strategies;
+using System.IO;
 
-using Weather_Monitoring_And_Reporting_Service.Strategies;
-
-namespace Weather_Monitoring_And_Reporting_Service;
-
-public static class TextFormatStrategyFactory
+namespace Weather_Monitoring_And_Reporting_Service
 {
-
-    public static ITextFormatStrategy? GetTextFormatStrategy(string? weatherDataFilePath)
+    public enum FileExtension
     {
-        if (String.IsNullOrEmpty(weatherDataFilePath))
-        {
-            throw new ArgumentNullException(nameof(weatherDataFilePath));
-        }
-
-        string fileExtension = GetFileExtension(weatherDataFilePath);
-
-        if (fileExtension.Equals("json")) return new JsonFormatStrategy();
-        if (fileExtension.Equals("xml")) return new XmlFormatStrategy();
-
-        else return null;
+        Json,
+        Xml
     }
 
-    private static string GetFileExtension(string? weatherDataFilePath)
+    public static class TextFormatStrategyFactory
     {
-        if (String.IsNullOrEmpty(weatherDataFilePath))
+        public static ITextFormatStrategy? GetTextFormatStrategy(string? weatherDataFilePath)
         {
-            throw new ArgumentNullException(nameof(weatherDataFilePath));
+            if (String.IsNullOrEmpty(weatherDataFilePath))
+            {
+                throw new WeatherDataFilePathNullException("Weather data file path is null or empty.");
+            }
+
+            FileExtension fileExtension = GetFileExtension(weatherDataFilePath);
+
+            switch (fileExtension)
+            {
+                case FileExtension.Json:
+                    return new JsonFormatStrategy();
+                case FileExtension.Xml:
+                    return new XmlFormatStrategy();
+                default:
+                    return null;
+            }
         }
-        return weatherDataFilePath.Split('.').Last();
+
+        private static FileExtension GetFileExtension(string? weatherDataFilePath)
+        {
+            string extension = Path.GetExtension(weatherDataFilePath)?.TrimStart('.');
+            return Enum.Parse<FileExtension>(extension, true);
+        }
     }
 }

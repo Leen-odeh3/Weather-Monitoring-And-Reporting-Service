@@ -1,77 +1,73 @@
-﻿using Weather_Monitoring_And_Reporting_Service.WeatherBot;
-using Weather_Monitoring_And_Reporting_Service.Subscriber;
+﻿using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
-using static Weather_Monitoring_And_Reporting_Service.Weather;
 
-namespace Weather_Monitoring_And_Reporting_Service.Publisher;
 
-public class WeatherPublisher : IWeatherPublisher
+namespace Weather_Monitoring_And_Reporting_Service.Publisher
 {
-    private bool _isNotified = false;
-
-
-    private Weather _weatherData;
-    public Weather WeatherData
+    public class WeatherPublisher : IWeatherPublisher
     {
-        set
+        private bool _isNotified = false;
+
+        private Weather _weatherData;
+        public Weather WeatherData
         {
-            _weatherData = value;
-            Notify();
-        }
-    }
-
-    private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
-    private Weather newData;
-    private ITextFormatStrategy textFormatStrategy;
-    private BotConfiguration botConfig;
-
-    public WeatherPublisher(string text, ITextFormatStrategy textFormat, BotConfiguration botConfig)
-    {
-        InitializeSubscribers(botConfig);
-
-        _weatherData = textFormat.GetWeatherData(text);
-
-        Notify();
-    }
-
-    public WeatherPublisher(Weather newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
-    {
-        this.newData = newData;
-        this.textFormatStrategy = textFormatStrategy;
-        this.botConfig = botConfig;
-    }
-
-    private void InitializeSubscribers(BotConfiguration botConfig)
-    {
-        Attach(botConfig.RainBot);
-        Attach(botConfig.SnowBot);
-        Attach(botConfig.SunBot);
-    }
-
-    public void Attach(IWeatherSubscriber observer)
-    {
-        _subscribers.Add(observer);
-    }
-
-    public void Detach(IWeatherSubscriber observer)
-    {
-        _subscribers.Remove(observer);
-    }
-
-    public void Notify()
-    {
-        if (!_isNotified)
-        {
-            Console.WriteLine("Notifying observers .... ");
-            Thread.Sleep(500);
-            foreach (var subscriber in _subscribers)
+            set
             {
-                subscriber.ProcessWeatherUpdate(_weatherData);
-                Thread.Sleep(500);
+                _weatherData = value;
+                _ = NotifyAsync(); 
             }
-            _isNotified = true;
+        }
+
+        private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
+        private Weather newData;
+        private ITextFormatStrategy textFormatStrategy;
+        private BotConfiguration botConfig;
+
+        public WeatherPublisher(string text, ITextFormatStrategy textFormat, BotConfiguration botConfig)
+        {
+            InitializeSubscribers(botConfig);
+            _weatherData = textFormat.GetWeatherData(text);
+            _ = NotifyAsync(); 
+        }
+
+        public WeatherPublisher(Weather newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
+        {
+            this.newData = newData;
+            this.textFormatStrategy = textFormatStrategy;
+            this.botConfig = botConfig;
+        }
+
+        private void InitializeSubscribers(BotConfiguration botConfig)
+        {
+            Attach(botConfig.RainBot);
+            Attach(botConfig.SnowBot);
+            Attach(botConfig.SunBot);
+        }
+
+        public void Attach(IWeatherSubscriber observer)
+        {
+            _subscribers.Add(observer);
+        }
+
+        public void Detach(IWeatherSubscriber observer)
+        {
+            _subscribers.Remove(observer);
+        }
+
+        public async Task NotifyAsync()
+        {
+            if (!_isNotified)
+            {
+                Console.WriteLine("Notifying observers .... ");
+                await Task.Delay(500);
+                foreach (var subscriber in _subscribers)
+                {
+                    subscriber.ProcessWeatherUpdate(_weatherData);
+                    await Task.Delay(500);
+                }
+                _isNotified = true;
+            }
         }
     }
 }
-

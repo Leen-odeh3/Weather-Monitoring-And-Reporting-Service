@@ -11,10 +11,9 @@ public class XmlFormatStrategy : ITextFormatStrategy
 
         XmlSerializer serializer = new XmlSerializer(typeof(Weather));
 
-        using (TextReader reader = new StringReader(text))
-        {
-            return (Weather)serializer.Deserialize(reader);
-        }
+        using TextReader reader = new StringReader(text);
+        return (Weather)serializer.Deserialize(reader);
+
 
     }
 
