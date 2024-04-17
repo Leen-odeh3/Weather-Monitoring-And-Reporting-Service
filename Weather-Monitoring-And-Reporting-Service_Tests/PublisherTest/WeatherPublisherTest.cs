@@ -92,4 +92,31 @@ public class WeatherPublisherTest
     }
 
 
+    [Fact]
+    public async Task Notify_CallsProcessWeatherUpdateForAllSubscribers()
+    {
+        // Arrange
+        var sut = CreateWeatherDataPublisher();
+        var mockSubscriber1 = new Mock<IWeatherSubscriber>();
+        var mockSubscriber2 = new Mock<IWeatherSubscriber>();
+
+        sut.Attach(mockSubscriber1.Object);
+        sut.Attach(mockSubscriber2.Object);
+
+        // Act
+        await sut.NotifyAsync();
+
+        // Assert
+        mockSubscriber1.Verify(
+            subscriber => subscriber.ProcessWeatherUpdate(It.IsAny<Weather>()),
+            Times.Exactly(2) 
+        );
+
+        mockSubscriber2.Verify(
+            subscriber => subscriber.ProcessWeatherUpdate(It.IsAny<Weather>()),
+            Times.Exactly(2)
+        );
+    }
+
+
 }
