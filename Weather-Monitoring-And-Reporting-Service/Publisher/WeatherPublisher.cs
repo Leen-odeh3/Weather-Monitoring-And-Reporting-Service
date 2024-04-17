@@ -1,27 +1,32 @@
 ﻿using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Weather_Monitoring_And_Reporting_Service.Publisher
 {
     public class WeatherPublisher : IWeatherPublisher
     {
         private bool _isNotified = false;
-
         private Weather _weatherData;
+
         public Weather WeatherData
         {
             set
             {
-                _weatherData = value;
-                _ = NotifyAsync(); 
+                if (!value.Equals(_weatherData))
+                {
+                    _weatherData = value;
+                    _ = NotifyAsync();
+                }
             }
         }
 
         public List<IWeatherSubscriber> Subscribers { get => _subscribers; set => _subscribers = value; }
-
         private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
+
         private Weather newData;
         private ITextFormatStrategy textFormatStrategy;
         private BotConfiguration botConfig;
@@ -30,7 +35,7 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher
         {
             InitializeSubscribers(botConfig);
             _weatherData = textFormat.GetWeatherData(text);
-            _ = NotifyAsync(); 
+            _ = NotifyAsync();
         }
 
         public WeatherPublisher(Weather newData, ITextFormatStrategy textFormatStrategy, BotConfiguration botConfig)
