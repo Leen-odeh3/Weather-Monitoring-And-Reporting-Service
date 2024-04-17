@@ -12,11 +12,15 @@ public class TextFormatStrategyFactoryTests
     [InlineData("")]
     public void GetTextFormatStrategy_EmptyOrNullString_ThrowsException(string? invalidWeatherDataFilePath)
     {
+        // Arrange & Act
         Action act = () => TextFormatStrategyFactory.GetTextFormatStrategy(invalidWeatherDataFilePath);
 
-        act.Should().Throw<ArgumentNullException>().WithParameterName("weatherDataFilePath");
-
+        // Assert
+        act.Should().Throw<WeatherDataFilePathNullException>()
+            .WithMessage("Weather data file path is null or empty.");
     }
+
+
     [Fact]
     public void GetTextFormatStrategy_UnsupportedFileExtension_ReturnsNull()
     {
