@@ -14,13 +14,23 @@ public class SunBot : IWeatherSubscriber
 
     public void ProcessWeatherUpdate(Weather weatherData)
     {
-        if (!Enabled) return;
+        if (!Enabled)
+        {
+            Console.WriteLine("SunBot is not enabled.");
+            return;
+        }
+
         if (weatherData.Temperature > TemperatureThreshold)
         {
             Activated = true;
             Console.WriteLine("SunBot Activated!");
             Console.WriteLine($"SunBot: \"{Message}\"");
         }
+        else
+        {
+            Console.WriteLine($"SunBot not activated. Temperature {weatherData.Temperature} is not higher than the threshold {TemperatureThreshold}.");
+        }
     }
+
 
 }
