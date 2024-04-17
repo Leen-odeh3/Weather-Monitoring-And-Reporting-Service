@@ -19,6 +19,8 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher
             }
         }
 
+        public List<IWeatherSubscriber> Subscribers { get => _subscribers; set => _subscribers = value; }
+
         private List<IWeatherSubscriber> _subscribers = new List<IWeatherSubscriber>();
         private Weather newData;
         private ITextFormatStrategy textFormatStrategy;

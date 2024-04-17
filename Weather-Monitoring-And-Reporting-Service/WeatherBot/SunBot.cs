@@ -10,6 +10,7 @@ public class SunBot : IWeatherSubscriber
     public bool Enabled { get; init; }
     public int TemperatureThreshold { get; init; }
     public string Message { get; init; }
+    public bool Activated { get; private set; }
 
     public void ProcessWeatherUpdate(Weather weatherData)
     {
