@@ -1,52 +1,57 @@
 ﻿
-
 using Weather_Monitoring_And_Reporting_Service;
 using Weather_Monitoring_And_Reporting_Service.WeatherBot;
 
-namespace Weather_Monitoring_And_Reporting_Service_Tests.WeatherBotTests;
-
-public class RainBotTest
+namespace Weather_Monitoring_And_Reporting_Service_Tests.WeatherBotTests
 {
-
-    [Fact]
-    public void ProcessWeatherUpdate_Disabled_MustNotBeActivated()
+    public class RainBotTest
     {
-        var weather= new Weather { Humidity = 60 };
-        var sut = new RainBot
+        [Fact]
+        public void ProcessWeatherUpdate_Disabled_MustNotBeActivated()
         {
-            Enabled = false,
-            HumidityThreshold = 70,
-            Message = "It's raining!"
-        };
-        sut.ProcessWeatherUpdate(weather);
-        Assert.False(sut.Activated);
-    }
-    [Fact]
+            var weatherData = new Weather { Humidity = 60 };
+            var sut = new RainBot
+            {
+                Enabled = false,
+                HumidityThreshold = 70,
+                Message = "It's raining!"
+            };
 
-    public void ProcessWeatherUpdate_EnabledWithHumidityLowerThanHumidityThreshold_MustNotBeActivated()
-    {
-        var weatherData = new Weather { Humidity = 60 };
-        var sut = new RainBot
-        {
-            Enabled = true,
-            HumidityThreshold = 100,
-            Message = "It's raining!"
-        };
-        sut.ProcessWeatherUpdate(weatherData);
-        Assert.False(sut.Activated);
-    }
-    [Fact]
+            sut.ProcessWeatherUpdate(weatherData);
 
-    public void ProcessWeatherUpdate_EnabledWithHumidityHigherThanHumidityThreshold_MustBeActivated()
-    {
-        var weatherData = new Weather { Humidity = 60 };
-        var sut = new RainBot
+            Assert.False(sut.Activated);
+        }
+
+        [Fact]
+        public void ProcessWeatherUpdate_EnabledWithHumidityLowerThanHumidityThreshold_MustNotBeActivated()
         {
-            Enabled = true,
-            HumidityThreshold = 40,
-            Message = "It's raining!"
-        };
-        sut.ProcessWeatherUpdate(weatherData);
-        Assert.True(sut.Activated);
+            var weatherData = new Weather { Humidity = 60 };
+            var sut = new RainBot
+            {
+                Enabled = true,
+                HumidityThreshold = 70, 
+                Message = "It's raining!"
+            };
+
+            sut.ProcessWeatherUpdate(weatherData);
+
+            Assert.False(sut.Activated);
+        }
+
+        [Fact]
+        public void ProcessWeatherUpdate_EnabledWithHumidityHigherThanHumidityThreshold_MustBeActivated()
+        {
+            var weatherData = new Weather { Humidity = 80 }; 
+            var sut = new RainBot
+            {
+                Enabled = true,
+                HumidityThreshold = 70,
+                Message = "It's raining!"
+            };
+
+            sut.ProcessWeatherUpdate(weatherData);
+
+            Assert.True(sut.Activated);
+        }
     }
 }
