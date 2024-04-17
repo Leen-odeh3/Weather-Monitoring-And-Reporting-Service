@@ -1,9 +1,6 @@
 ﻿using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Weather_Monitoring_And_Reporting_Service.Configuration;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Weather_Monitoring_And_Reporting_Service.Publisher
 {
