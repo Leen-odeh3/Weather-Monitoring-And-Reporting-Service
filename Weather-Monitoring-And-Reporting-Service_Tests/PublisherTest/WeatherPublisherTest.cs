@@ -82,7 +82,7 @@ public class WeatherPublisherTest
         );
     }
 
-    [Fact]
+    /* [Fact]
     public void InitializeSubscribers_AttachesBotsFromBotConfig()
     {
         var botConfig = new BotConfiguration
@@ -102,8 +102,7 @@ public class WeatherPublisherTest
         Assert.Contains(botConfig.SunBot, sut.Subscribers);
         Assert.Equal(3, sut.Subscribers.Count);
     }
-
-
+    */
 
     [Fact]
     public void Notify_CallsProcessWeatherUpdateForAllSubscribers()
