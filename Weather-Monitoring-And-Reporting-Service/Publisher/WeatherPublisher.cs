@@ -45,7 +45,7 @@ namespace Weather_Monitoring_And_Reporting_Service.Publisher
             this.botConfig = botConfig;
         }
 
-        private void InitializeSubscribers(BotConfiguration botConfig)
+        public void InitializeSubscribers(BotConfiguration botConfig)
         {
             Attach(botConfig.RainBot);
             Attach(botConfig.SnowBot);

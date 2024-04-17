@@ -7,6 +7,7 @@ using Weather_Monitoring_And_Reporting_Service.Publisher;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
 using Weather_Monitoring_And_Reporting_Service.Subscriber;
 using Xunit;
+using Weather_Monitoring_And_Reporting_Service.WeatherBot;
 
 namespace Weather_Monitoring_And_Reporting_Service_Tests.PublisherTest;
 
@@ -66,7 +67,29 @@ public class WeatherPublisherTest
             Times.Never
         );
     }
+    [Fact]
+    public void InitializeSubscribers_AttachesBotsFromBotConfig()
+    {
+        // Arrange
+        var botConfig = new BotConfiguration
+        {
+            RainBot = fixture.Create<RainBot>(),
+            SnowBot = fixture.Create<SnowBot>(),
+            SunBot = fixture.Create<SunBot>()
+        };
 
+        var sut = CreateWeatherDataPublisher();
+        sut.Subscribers.Clear();
+
+        // Act
+        sut.InitializeSubscribers(botConfig);
+
+        // Assert
+        Assert.Contains(botConfig.RainBot, sut.Subscribers);
+        Assert.Contains(botConfig.SnowBot, sut.Subscribers);
+        Assert.Contains(botConfig.SunBot, sut.Subscribers);
+        Assert.Equal(3, sut.Subscribers.Count);
+    }
 
 
 }
