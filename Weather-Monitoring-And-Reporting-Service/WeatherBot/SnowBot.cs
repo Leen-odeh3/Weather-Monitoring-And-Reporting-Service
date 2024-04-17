@@ -20,6 +20,8 @@ public class SnowBot : IWeatherSubscriber
         {
             Console.WriteLine("SnowBot Activated!");
             Console.WriteLine($"SnowBot: \"{Message}\"");
+            Activated = true;
         }
     }
+
 }
