@@ -15,11 +15,12 @@ public class SunBot : IWeatherSubscriber
     public void ProcessWeatherUpdate(Weather weatherData)
     {
         if (!Enabled) return;
-        if (weatherData.Temperature < TemperatureThreshold)
+        if (weatherData.Temperature > TemperatureThreshold)
         {
             Activated = true;
-            Console.WriteLine("Snowbot Activated!");
-            Console.WriteLine($"Snowbot: \"{Message}\"");
+            Console.WriteLine("SunBot Activated!");
+            Console.WriteLine($"SunBot: \"{Message}\"");
         }
     }
+
 }

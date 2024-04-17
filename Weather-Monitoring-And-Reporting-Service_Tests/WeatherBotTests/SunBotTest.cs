@@ -40,6 +40,7 @@ public class SunBotTest
     [Fact]
     public void ProcessWeatherUpdate_EnabledWithTemperatureLowerThanTemperatureThreshold_MustNotBeActivated()
     {
+        // Arrange
         var weatherData = new Weather { Temperature = 20 };
         var sut = new SunBot
         {
@@ -48,8 +49,11 @@ public class SunBotTest
             Message = "It's sunny!"
         };
 
+        // Act
         sut.ProcessWeatherUpdate(weatherData);
 
-        Assert.False(sut.Activated);
+        // Assert
+        Assert.False(sut.Activated, "The SunBot should not be activated when temperature is lower than the threshold.");
     }
+
 }
