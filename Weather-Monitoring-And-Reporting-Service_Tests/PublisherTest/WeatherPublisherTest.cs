@@ -44,6 +44,7 @@ public class WeatherPublisherTest
         Assert.Contains(mockSubscriber.Object, sut.Subscribers);
     }
 
+
     [Fact]
     public void WeatherDataPublisher_DetachSubscriber()
     {
