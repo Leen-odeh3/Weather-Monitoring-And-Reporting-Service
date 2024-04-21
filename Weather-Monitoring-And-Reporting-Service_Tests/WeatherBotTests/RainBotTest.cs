@@ -1,57 +1,63 @@
-﻿
+﻿using AutoFixture;
+using FluentAssertions;
 using Weather_Monitoring_And_Reporting_Service;
 using Weather_Monitoring_And_Reporting_Service.WeatherBot;
+namespace Weather_Monitoring_And_Reporting_Service_Tests.WeatherBotTests;
 
-namespace Weather_Monitoring_And_Reporting_Service_Tests.WeatherBotTests
+public class RainBotTest
 {
-    public class RainBotTest
+    private readonly Fixture _fixture;
+
+    public RainBotTest()
     {
-        [Fact]
-        public void ProcessWeatherUpdate_Disabled_MustNotBeActivated()
+        _fixture = new Fixture();
+    }
+
+    [Fact]
+    public void ProcessWeatherUpdate_Disabled_MustNotBeActivated()
+    {
+        var weatherData = _fixture.Build<Weather>().Create();
+        var sut = new RainBot
         {
-            var weatherData = new Weather { Humidity = 60 };
-            var sut = new RainBot
-            {
-                Enabled = false,
-                HumidityThreshold = 70,
-                Message = "It's raining!"
-            };
+            Enabled = false,
+            HumidityThreshold = _fixture.Create<int>(),
+            Message = _fixture.Create<string>()
+        };
 
-            sut.ProcessWeatherUpdate(weatherData);
+        sut.ProcessWeatherUpdate(weatherData);
+        sut.Activated.Should().BeFalse();
+    }
 
-            Assert.False(sut.Activated);
-        }
+    [Fact]
+    public void ProcessWeatherUpdate_EnabledWithHumidityLowerThanHumidityThreshold_MustNotBeActivated()
+    {
 
-        [Fact]
-        public void ProcessWeatherUpdate_EnabledWithHumidityLowerThanHumidityThreshold_MustNotBeActivated()
+        var weatherData = _fixture.Build<Weather>().Create();
+        var sut = new RainBot
         {
-            var weatherData = new Weather { Humidity = 60 };
-            var sut = new RainBot
-            {
-                Enabled = true,
-                HumidityThreshold = 70, 
-                Message = "It's raining!"
-            };
+            Enabled = true,
+            HumidityThreshold = _fixture.Create<int>(),
+            Message = _fixture.Create<string>()
+        };
 
-            sut.ProcessWeatherUpdate(weatherData);
+        sut.ProcessWeatherUpdate(weatherData);
 
-            Assert.False(sut.Activated);
-        }
+        sut.Activated.Should().BeFalse();
+    }
 
-        [Fact]
-        public void ProcessWeatherUpdate_EnabledWithHumidityHigherThanHumidityThreshold_MustBeActivated()
+    [Fact]
+    public void ProcessWeatherUpdate_EnabledWithHumidityHigherThanHumidityThreshold_MustBeActivated()
+    {
+        var weatherData = _fixture.Build<Weather>().With(w => w.Humidity, _fixture.Create<int>()).Create();
+        var sut = new RainBot
         {
-            var weatherData = new Weather { Humidity = 80 }; 
-            var sut = new RainBot
-            {
-                Enabled = true,
-                HumidityThreshold = 70,
-                Message = "It's raining!"
-            };
+            Enabled = true,
+            HumidityThreshold = _fixture.Create<int>(),
+            Message = _fixture.Create<string>()
+        };
 
-            sut.ProcessWeatherUpdate(weatherData);
+        sut.ProcessWeatherUpdate(weatherData);
 
-            Assert.True(sut.Activated);
-        }
+        sut.Activated.Should().BeTrue();
     }
 }
