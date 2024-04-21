@@ -41,7 +41,11 @@ public class WeatherPublisherTest
 
         sut.Attach(mockSubscriber.Object);
 
-        Assert.Contains(mockSubscriber.Object, sut.Subscribers);
+        // Assert
+        var actualSubscribers = sut.Subscribers;
+        var expectedSubscriber = mockSubscriber.Object;
+
+        Assert.Contains(expectedSubscriber, actualSubscribers);
     }
 
 
