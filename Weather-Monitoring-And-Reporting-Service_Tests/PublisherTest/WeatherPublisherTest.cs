@@ -25,13 +25,10 @@ public class WeatherPublisherTest
 
     private WeatherPublisher CreateWeatherDataPublisher()
     {
-        var mockTextFormatStrategy = new Mock<ITextFormatStrategy>();
-        var expectedText = "sunny day in the city";
-        var botConfig = _fixture.Create<BotConfiguration>();
+        var text = _fixture.Create<string>();
+        _mockTextFormatStrategy.Setup(x => x.GetWeatherData(text)).Returns(_fixture.Create<Weather>());
 
-        mockTextFormatStrategy.Setup(x => x.GetWeatherData(expectedText)).Returns(_fixture.Create<Weather>());
-
-        return new WeatherPublisher(expectedText, mockTextFormatStrategy.Object, botConfig);
+        return new WeatherPublisher(text, _mockTextFormatStrategy.Object, _botConfig);
     }
 
 
