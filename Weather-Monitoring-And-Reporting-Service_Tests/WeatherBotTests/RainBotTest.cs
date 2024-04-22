@@ -48,16 +48,23 @@ public class RainBotTest
     [Fact]
     public void ProcessWeatherUpdate_EnabledWithHumidityHigherThanHumidityThreshold_MustBeActivated()
     {
-        var weatherData = _fixture.Build<Weather>().With(w => w.Humidity, _fixture.Create<int>()).Create();
+        var humidityThreshold = _fixture.Create<int>() + 10; 
+
+        var weatherData = _fixture.Build<Weather>()
+                                  .With(w => w.Humidity, humidityThreshold + 10) 
+                                  .Create();
         var sut = new RainBot
         {
             Enabled = true,
-            HumidityThreshold = _fixture.Create<int>(),
+            HumidityThreshold = humidityThreshold,
             Message = _fixture.Create<string>()
         };
-
         sut.ProcessWeatherUpdate(weatherData);
-
         sut.Activated.Should().BeTrue();
     }
+
+
+
+
+
 }
