@@ -32,7 +32,7 @@ public class WeatherPublisherTest
     }
 
     [Fact]
-    public void WeatherDataPublisher_AttachSubscriber()
+    public void WeatherDataPublisher_AttachSubscriber_SuccessfulAttachment()
     {
         var sut = CreateWeatherDataPublisher();
         var mockSubscriber = _fixture.Create<Mock<IWeatherSubscriber>>();

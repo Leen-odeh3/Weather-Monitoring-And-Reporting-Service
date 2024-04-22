@@ -12,7 +12,7 @@ namespace Weather_Monitoring_And_Reporting_Service_Tests.StrategiesTest;
     public void GetWeatherData_ValidJson_ReturnsWeatherObject()
     {
         // Arrange
-        string json = "{\"Temperature\":25,\"Humidity\":50}";
+        var json = "{\"Temperature\":25,\"Humidity\":50}";
         JsonFormatStrategy strategy = new JsonFormatStrategy();
 
         // Act
