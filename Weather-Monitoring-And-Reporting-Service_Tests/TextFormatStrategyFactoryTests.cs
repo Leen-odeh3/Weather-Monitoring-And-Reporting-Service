@@ -1,37 +1,39 @@
 ﻿using FluentAssertions;
 using Weather_Monitoring_And_Reporting_Service.Strategies;
-using Weather_Monitoring_And_Reporting_Service;
+using Xunit;
 
-namespace Weather_Monitoring_And_Reporting_Service_Tests;
-
-public class TextFormatStrategyFactoryTests
+namespace Weather_Monitoring_And_Reporting_Service.Tests
 {
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void GetTextFormatStrategy_EmptyOrNullString_ThrowsException(string? invalidWeatherDataFilePath)
+    public class TextFormatStrategyFactoryTests
     {
-        Action act = () => TextFormatStrategyFactory.GetTextFormatStrategy(invalidWeatherDataFilePath);
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void GetTextFormatStrategy_EmptyOrNullString_ThrowsException(string invalidWeatherDataFilePath)
+        {
+            // Act & Assert
+            FluentActions.Invoking(() => TextFormatStrategyFactory.GetTextFormatStrategy(invalidWeatherDataFilePath))
+                .Should().Throw<WeatherDataFilePathNullException>();
+        }
 
-        act.Should().Throw<WeatherDataFilePathNullException>();
+        [Fact]
+        public void GetTextFormatStrategy_JsonFileExtension_ReturnsJsonStrategy()
+        {
+            string weatherDataFilePath = "x.json";
 
-    }
+            var strategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
 
-    [Fact]
-    public void GetTextFormatStrategy_JsonFileExtension_ReturnsJsonStrategy()
-    {
-        string weatherDataFilePath = "x.json";
+            strategy.Should().BeOfType<JsonFormatStrategy>();
+        }
 
-        var strategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
-        strategy.Should().BeOfType<JsonFormatStrategy>();
-    }
+        [Fact]
+        public void GetTextFormatStrategy_XmlFileExtension_ReturnsXmlStrategy()
+        {
+            string weatherDataFilePath = "x.xml";
 
-    [Fact]
-    public void GetTextFormatStrategy_XmlFileExtension_ReturnsXmlStrategy()
-    {
-        string weatherDataFilePath = "x.xml";
+            var strategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
 
-        var strategy = TextFormatStrategyFactory.GetTextFormatStrategy(weatherDataFilePath);
-        strategy.Should().BeOfType<XmlFormatStrategy>();
+            strategy.Should().BeOfType<XmlFormatStrategy>();
+        }
     }
 }
