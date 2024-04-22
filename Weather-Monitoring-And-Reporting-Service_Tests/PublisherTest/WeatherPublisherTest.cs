@@ -31,8 +31,6 @@ public class WeatherPublisherTest
         return new WeatherPublisher(text, _mockTextFormatStrategy.Object, _botConfig);
     }
 
-
-
     [Fact]
     public void WeatherDataPublisher_AttachSubscriber()
     {
@@ -47,7 +45,6 @@ public class WeatherPublisherTest
 
         Assert.Contains(expectedSubscriber, actualSubscribers);
     }
-
 
     [Fact]
     public void WeatherDataPublisher_DetachSubscriber()
@@ -96,7 +93,6 @@ public class WeatherPublisherTest
         Assert.Equal(3, sut.Subscribers.Count);
     }
 
-
     [Fact]
     public async Task Notify_CallsProcessWeatherUpdateForAllSubscribers()
     {
@@ -119,4 +115,6 @@ public class WeatherPublisherTest
             Times.Exactly(2)
         );
     }
+
+
 }
