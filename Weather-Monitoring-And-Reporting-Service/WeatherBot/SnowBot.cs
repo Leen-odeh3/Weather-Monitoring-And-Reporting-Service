@@ -11,6 +11,8 @@ public class SnowBot : IWeatherSubscriber
     public int TemperatureThreshold { get; init; }
     public string Message { get; init; }
 
+    public bool Activated { get; private set; }
+
     public void ProcessWeatherUpdate(Weather weatherData)
     {
         if (!Enabled) return;
@@ -18,6 +20,8 @@ public class SnowBot : IWeatherSubscriber
         {
             Console.WriteLine("SnowBot Activated!");
             Console.WriteLine($"SnowBot: \"{Message}\"");
+            Activated = true;
         }
     }
+
 }
